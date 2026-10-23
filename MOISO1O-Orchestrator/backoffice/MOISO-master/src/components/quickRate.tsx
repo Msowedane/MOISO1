@@ -1,7 +1,6 @@
 
 import { useEffect, useRef, useState } from "react";
-import { ChevronDown } from "lucide-react";
-
+import { ChevronDown, RefreshCw } from "lucide-react";
 interface FilterOption {
     label: string;
     value: string;
@@ -23,7 +22,6 @@ function FilterSelect({
     const [open, setOpen] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
     const selectedLabel = options.find((option) => option.value === value)?.label ?? label;
-
     useEffect(() => {
         if (!open) return;
 
@@ -74,9 +72,8 @@ function FilterSelect({
                                 onChange(option.value);
                                 setOpen(false);
                             }}
-                            className={`block w-full rounded-md px-3 py-2 text-left text-sm hover:bg-slate-100 ${
-                                option.value === value ? "bg-blue-50 font-medium text-blue-700" : "text-slate-700"
-                            }`}
+                            className={`block w-full rounded-md px-3 py-2 text-left text-sm hover:bg-slate-100 ${option.value === value ? "bg-blue-50 font-medium text-blue-700" : "text-slate-700"
+                                }`}
                         >
                             {option.label}
                         </button>
@@ -122,16 +119,7 @@ const countries = [
 const payoutMethods = [
     { label: "Account Transfer", value: "ACCOUNT_TRANSFER" },
     { label: "Mobile Wallet", value: "MOBILE_WALLET" },
-    { label: "Cash Pickup", value: "CASH_PICKUP" },
-    { label: "Debit Card", value: "DEBIT_CARD" },
-    { label: "Credit Card", value: "CREDIT_CARD" },
-    { label: "Instant Bank Transfer", value: "INSTANT_BANK_TRANSFER" },
-    { label: "Bank Deposit", value: "BANK_DEPOSIT" },
-    { label: "Cash Delivery", value: "CASH_DELIVERY" },
-    { label: "Mobile Money", value: "MOBILE_MONEY" },
-    { label: "Digital Wallet", value: "DIGITAL_WALLET" },
-    { label: "UPI Transfer", value: "UPI_TRANSFER" },
-    { label: "Home Delivery", value: "HOME_DELIVERY" },
+    { label: "Cash Pickup", value: "CASH_PICKUP" }
 ];
 
 const transactionTypes = [
@@ -148,80 +136,120 @@ function QuickRate() {
     const [transactionType, setTransactionType] = useState("ALL");
 
     return (
-        <div className="flex w-full flex-col rounded-xl border border-slate-200 bg-white p-5">
-            <h2 className="mb-5 text-lg font-semibold text-slate-900">
-                Quick Rate
-            </h2>
-
-            {/* Filters */}
-            <div className="order-2 mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-
-                {/* All Sources */}
-                <div>
-                    <FilterSelect
-                        id="source"
-                        label="All Sources"
-                        value={source}
-                        onChange={setSource}
-                        options={[{ label: "All Sources", value: "ALL" }, ...countries]}
-                    />
+        <div>
+            <div className="flex w-full flex-col rounded-xl border border-slate-200 bg-white p-5">
+                <div className="mb-5 flex items-center justify-between gap-3">
+                    <h2 className="text-lg font-semibold text-slate-900">
+                        Quick Rate
+                    </h2>
+                    <button
+                        type="button"
+                        onClick={() => window.location.reload()}
+                        className="inline-flex items-center gap-2 rounded-md border border-slate-200 px-3 py-2 text-sm text-slate-700 hover:bg-slate-50"
+                        aria-label="Refresh quick rates"
+                    >
+                        <RefreshCw className="h-4 w-4" />
+                        Refresh
+                    </button>
                 </div>
 
-                {/* All Destinations */}
-                <div>
-                    <FilterSelect
-                        id="destination"
-                        label="All Destinations"
-                        value={destination}
-                        onChange={setDestination}
-                        options={[{ label: "All Destinations", value: "ALL" }, ...countries]}
-                    />
+                {/* Filters */}
+                <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 pb-12">
+
+                    {/* All Sources */}
+                    <div>
+                        <FilterSelect
+                            id="source"
+                            label="All Sources"
+                            value={source}
+                            onChange={setSource}
+                            options={[{ label: "All Sources", value: "ALL" }, ...countries]}
+                        />
+                    </div>
+
+                    {/* All Destinations */}
+                    <div>
+                        <FilterSelect
+                            id="destination"
+                            label="All Destinations"
+                            value={destination}
+                            onChange={setDestination}
+                            options={[{ label: "All Destinations", value: "ALL" }, ...countries]}
+                        />
+                    </div>
+
+                    {/* All Payout Methods */}
+                    <div>
+                        <FilterSelect
+                            id="payoutMethod"
+                            label="All Payout Methods"
+                            value={payoutMethod}
+                            onChange={setPayoutMethod}
+                            options={[{ label: "All Payout Methods", value: "ALL" }, ...payoutMethods]}
+                        />
+                    </div>
+
+                    {/* All Transaction Types */}
+                    <div>
+                        <FilterSelect
+                            id="transactionType"
+                            label="All Transaction Types"
+                            value={transactionType}
+                            onChange={setTransactionType}
+                            options={[{ label: "All Transaction Types", value: "ALL" }, ...transactionTypes]}
+                        />
+                    </div>
                 </div>
 
-                {/* All Payout Methods */}
-                <div>
-                    <FilterSelect
-                        id="payoutMethod"
-                        label="All Payout Methods"
-                        value={payoutMethod}
-                        onChange={setPayoutMethod}
-                        options={[{ label: "All Payout Methods", value: "ALL" }, ...payoutMethods]}
-                    />
-                </div>
+                <div className="rounded-lg border border-slate-200">
+                    <table className="w-full min-w-[900px] border-collapse text-left text-xl text-black">
+                        <thead className="bg-slate-50 text-black">
+                            <tr>
+                                <th scope="col" className="whitespace-nowrap px-5 py-4 text-lg font-bold text-slate-700">
+                                    Corridor
+                                </th>
+                                <th scope="col" className="whitespace-nowrap px-5 py-4 text-lg font-bold text-slate-700">
+                                    Source
+                                </th>
+                                <th scope="col" className="whitespace-nowrap px-5 py-4 text-lg font-bold text-slate-700">
+                                    Destination
+                                </th>
+                                <th scope="col" className="whitespace-nowrap px-5 py-4 text-lg font-bold text-slate-700">
+                                    Payout Method
+                                </th>
+                                <th scope="col" className="whitespace-nowrap px-5 py-4 text-lg font-bold text-slate-700">
+                                    Transaction Type
+                                </th>
+                                <th scope="col" className="whitespace-nowrap px-5 py-4 text-lg font-bold text-slate-700">
+                                    Customer Rate
+                                </th>
+                            </tr>
+                        </thead>
 
-                {/* All Transaction Types */}
-                <div>
-                    <FilterSelect
-                        id="transactionType"
-                        label="All Transaction Types"
-                        value={transactionType}
-                        onChange={setTransactionType}
-                        options={[{ label: "All Transaction Types", value: "ALL" }, ...transactionTypes]}
-                    />
+                        <tbody>
+                            <tr>
+                                <td
+                                    colSpan={6}
+                                    className="border-t border-slate-200 px-5 py-12 text-center text-xl font-medium text-black"
+                                >
+                                    No rates available.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
+            <section className="flex flex-wrap w-full mt-4 gap-4">
+                <div className="rounded-lg border border-slate-200 bg-white p-4 text-sm text-slate-900 shadow-sm w-132">
+                    <h1 className="text-xl font-semibold">Recent Transactions</h1>
+                    <p className="text-lg text-slate-600">Latest remittance activities</p>
+                </div>
+                <div className="rounded-lg border border-slate-200 bg-white p-4 text-sm text-slate-900 shadow-sm w-135">
+                    <h1 className="text-xl font-semibold">System Status</h1>
+                    <p className="text-lg text-slate-600">API connection and notifications</p>
 
-            <div className="order-1 overflow-x-auto rounded-lg border border-slate-200">
-                <table className="w-full min-w-[900px] border-collapse text-left text-sm">
-                    <thead className="bg-slate-50 text-slate-500">
-                        <tr>
-                            <th scope="col" className="whitespace-nowrap px-5 py-4 font-medium">Corridor</th>
-                            <th scope="col" className="whitespace-nowrap px-5 py-4 font-medium">Source</th>
-                            <th scope="col" className="whitespace-nowrap px-5 py-4 font-medium">Destination</th>
-                            <th scope="col" className="whitespace-nowrap px-5 py-4 font-medium">Payout Method</th>
-                            <th scope="col" className="whitespace-nowrap px-5 py-4 font-medium">Transaction Type</th>
-                            <th scope="col" className="whitespace-nowrap px-5 py-4 font-medium">Customer Rate</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td colSpan={6} className="border-t border-slate-200 px-5 py-12 text-center text-slate-500">
-                                No rates available.
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+                </div>
+            </section>
         </div>
     );
 }

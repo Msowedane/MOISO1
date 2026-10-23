@@ -108,43 +108,58 @@ export function XELiveRatesWidget({
     const [date, setDate] = useState("");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
-
-    const fetchRate = async () => {
-        setLoading(true);
-        setError("");
-
-        try {
-            const response = await fetch(
-                `https://open.er-api.com/v6/latest/${from}`
-            );
-
-            if (!response.ok) {
-                throw new Error("Unable to fetch exchange rates.");
-            }
-
-            const data = await response.json();
-
-            if (data.result !== "success" || !data.rates?.[to]) {
-                throw new Error("Exchange rate is unavailable.");
-            }
-
-            setRate(data.rates[to]);
-            setDate(data.time_last_update_utc || "");
-        } catch (err) {
-            setError(
-                err instanceof Error
-                    ? err.message
-                    : "Something went wrong while fetching rates."
-            );
-            setRate(null);
-        } finally {
-            setLoading(false);
-        }
-    };
+    const [refreshKey, setRefreshKey] = useState(0);
 
     useEffect(() => {
-        void fetchRate();
-    }, [from, to]);
+        const controller = new AbortController();
+
+        const loadRate = async () => {
+            setLoading(true);
+            setError("");
+            setRate(null);
+            setDate("");
+
+            try {
+                const response = await fetch(
+                    `https://open.er-api.com/v6/latest/${from}`,
+                    { signal: controller.signal, cache: "no-store" }
+                );
+
+                if (!response.ok) {
+                    throw new Error("Unable to fetch exchange rates.");
+                }
+
+                const data = await response.json();
+                const fetchedRate: unknown = data.rates?.[to];
+
+                if (
+                    data.result !== "success" ||
+                    typeof fetchedRate !== "number" ||
+                    !Number.isFinite(fetchedRate)
+                ) {
+                    throw new Error("Exchange rate is unavailable.");
+                }
+
+                setRate(fetchedRate);
+                setDate(data.time_last_update_utc || "");
+            } catch (err) {
+                if (controller.signal.aborted) return;
+                setError(
+                    err instanceof Error
+                        ? err.message
+                        : "Something went wrong while fetching rates."
+                );
+                setRate(null);
+            } finally {
+                if (!controller.signal.aborted) setLoading(false);
+            }
+        };
+
+        void loadRate();
+        return () => controller.abort();
+    }, [from, to, refreshKey]);
+
+    const refreshRate = () => setRefreshKey((key) => key + 1);
 
     const convertedAmount =
         rate !== null && amount.trim() !== "" && Number.isFinite(Number(amount))
@@ -168,7 +183,7 @@ export function XELiveRatesWidget({
 
                     <button
                         type="button"
-                        onClick={fetchRate}
+                        onClick={refreshRate}
                         disabled={loading}
                         className="inline-flex items-center gap-2 rounded-md border px-3 py-2 text-sm hover:bg-muted disabled:opacity-50"
                     >
