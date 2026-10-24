@@ -3,8 +3,6 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 
 const Dashboard = lazy(() => import('../components/dashboard'));
 const LoginPage = lazy(() => import('../admin/login'));
-const CreateTransactions = lazy(() => import('../components/transactions/createTransactions'));
-
 export default function AppRouter() {
   return (
     <Suspense
@@ -18,7 +16,9 @@ export default function AppRouter() {
         <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/create-transaction" element={<CreateTransactions />} />
+        <Route path="/create-transaction" element={<Dashboard />} />
+        <Route path="/createtransactions" element={<Dashboard />} />
+        <Route path="/createremitter" element={<Dashboard />} />
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </Suspense>

@@ -1,6 +1,7 @@
 
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+
 import { Activity, Archive, ChevronDown, CircleAlert, CircleX, Download, LoaderCircle, Plus, RefreshCw, RotateCcw, Upload } from "lucide-react";
 import AdvancedSearch from "./advancedSearch";
 const payoutMethods: string[] = [
@@ -158,8 +159,8 @@ function Transactions() {
         setOpenFilter(null);
     };
 
-    const handleTransactions = () => {
-        navigate("/create-transaction");
+    const handleCreateTransaction = () => {
+        window.self.location.href = "/create-transaction";
     };
 
     const handleFileChange = (
@@ -234,10 +235,9 @@ function Transactions() {
                         {selectedFile ? "Import Selected File" : "Import"}
                     </button>
 
-                    {/* Create Transaction */}
                     <button
                         type="button"
-                        onClick={handleTransactions}
+                        onClick={handleCreateTransaction}
                         className="flex items-center gap-2 rounded-lg bg-violet-200 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-violet-400 focus:outline-none focus:ring-2 focus:ring-violet-400 focus:ring-offset-2"
                     >
                         <Plus size={18} />
