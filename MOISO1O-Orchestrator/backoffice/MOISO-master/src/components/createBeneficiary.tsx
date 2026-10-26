@@ -55,7 +55,7 @@ const emptyPayoutMethod: PayoutMethod = {
 };
 
 const emptyForm: BeneficiaryForm = {
-    country: "Nigeria",
+    country: "India",
     beneficiaryType: "Consumer",
     firstName: "",
     middleName: "",
@@ -94,7 +94,6 @@ const beneficiaryCountries = [
 ];
 
 const currencies = [
-    { code: "NGN", name: "Nigerian Naira" },
     { code: "INR", name: "Indian Rupee" },
     { code: "GBP", name: "Pound Sterling" },
     { code: "USD", name: "US Dollar" },

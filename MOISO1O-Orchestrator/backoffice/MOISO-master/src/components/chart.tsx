@@ -57,7 +57,7 @@ export default function PieWithGradient({
 }: PieWithGradientProps) {
     return (
         <div className="w-full">
-            <h2 className="mb-2 text-lg font-semibold text-slate-900">
+            <h2 className=" text-lg font-semibold text-slate-900">
                 Top Destination Countries
             </h2>
             <p className="text-slate-500">

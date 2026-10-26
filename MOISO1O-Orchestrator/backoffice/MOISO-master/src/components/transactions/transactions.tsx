@@ -84,8 +84,8 @@ function FilterDropdown({
 }) {
     const selectedOption = options.find((option) => option.value === value) ?? options[0];
     return (
-        <div className="relative min-w-0 space-y-1.5 text-sm font-medium text-slate-700">
-            <span>{label}</span>
+        <div className="relative flex min-w-0 flex-col gap-2 text-sm font-medium text-slate-700">
+            <span className="block">{label}</span>
             <button
                 id={`${id}-trigger`}
                 type="button"
@@ -301,7 +301,7 @@ function Transactions() {
             </section>
 
             <section aria-labelledby="transaction-filter-title" className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-                <div className="mb-5 flex items-start justify-between gap-4">
+                <div className="mb-5 flex items-start justify-between gap-5">
                     <div>
                         <h2 id="transaction-filter-title" className="text-xl font-semibold text-slate-900">
                             Search &amp; Filter
@@ -319,7 +319,7 @@ function Transactions() {
                 </div>
 
                 <div className="grid grid-cols-1 gap-4 border-b border-slate-100 pb-5 md:grid-cols-2">
-                    <label className="space-y-1.5 text-sm font-medium text-slate-700">
+                    <label className="flex flex-col gap-1.5 text-sm font-medium text-slate-700">
                         <span>Find Transactions</span>
                         <input
                             type="search"
@@ -353,7 +353,7 @@ function Transactions() {
                     </div>
                 )}
 
-                <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                     <FilterDropdown
                         id="transaction-type"
                         label="Transaction Type"

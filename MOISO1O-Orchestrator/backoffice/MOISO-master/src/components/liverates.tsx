@@ -167,7 +167,7 @@ export function XELiveRatesWidget({
             : null;
 
     return (
-        <div className={`rounded-xl border bg-white p-4 shadow-sm ${className ?? ""}`}>
+        <div className={`rounded-xl border bg-white p-3 shadow-sm ${className ?? ""}`}>
             <div className="pb-3">
                 <div className="flex items-start justify-between gap-3">
                     <div>
@@ -185,8 +185,8 @@ export function XELiveRatesWidget({
                         type="button"
                         onClick={refreshRate}
                         disabled={loading}
-                        className="inline-flex items-center gap-2 rounded-md border px-3 py-2 text-sm hover:bg-muted disabled:opacity-50"
-                    >
+                        className="inline-flex items-center gap-2 rounded-md border border-slate-200 px-3 py-2 text-sm text-slate-700 hover:bg-slate-50"
+                        style={{ marginRight: "5px" }} >
                         <RefreshCw
                             className={`h-4 w-4 ${loading ? "animate-spin" : ""}`}
                         />
@@ -196,8 +196,8 @@ export function XELiveRatesWidget({
             </div>
 
             <div className="space-y-5">
-                <div className="grid grid-cols-1 items-center gap-3 sm:grid-cols-2 lg:grid-cols-[200px_200px_40px_200px_200px]">
-                    <div style={{ width: "200px" }}>
+                <div className="grid grid-cols-1 items-center gap-6 sm:grid-cols-2 lg:grid-cols-[200px_200px_40px_200px_200px]">
+                    <div style={{ width: "215px" }}>
                         {/* <label className="mb-2 block text-sm font-medium"> */}
                         {/* Amount */}
                         {/* </label> */}
@@ -211,7 +211,7 @@ export function XELiveRatesWidget({
                             placeholder="Enter amount"
                         />
                     </div>
-                    <div style={{ width: "200px" }}>
+                    <div style={{ width: "215px" }}>
                         {/* <label className="mb-2 block text-sm font-medium">From</label> */}
                         <CurrencyPicker value={from} onChange={setFrom} label="From" />
                     </div>
@@ -225,16 +225,16 @@ export function XELiveRatesWidget({
                         }}
                         disabled={loading}
                         className="flex h-10 w-10 items-center justify-center rounded-md border border-slate-200 bg-white text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
-                    >
+                        style={{ marginLeft: "10px" }}>
                         <ArrowLeftRight className="h-5 w-5" />
                     </button>
-                    <div style={{ width: "200px" }}>
+                    <div style={{ width: "215px" }}>
                         {/* <label className="mb-2 block text-sm font-medium">To</label> */}
                         <CurrencyPicker value={to} onChange={setTo} label="To" />
                     </div>
                     <div className="min-w-0">
                         {/* <label className="mb-2 block text-sm font-medium">Converted amount</label> */}
-                        <div className="flex h-10 min-w-0 items-center rounded-md border bg-muted/30 px-3" style={{ width: "200px" }}>
+                        <div className="flex h-10 min-w-0 items-center rounded-md border bg-muted/30 px-3" style={{ width: "215px" }}>
                             {loading ? (
                                 <span className="flex items-center gap-2 text-sm text-muted-foreground">
                                     <Loader2 className="h-4 w-4 animate-spin" />

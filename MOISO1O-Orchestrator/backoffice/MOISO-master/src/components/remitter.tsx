@@ -10,6 +10,8 @@ import {
     CheckCircle,
     XCircle,
     Search,
+    Shield,
+    RotateCcw,
 } from "lucide-react";
 
 // Type definitions
@@ -364,7 +366,7 @@ function Remitter({ onAddRemitter }: RemitterProps) {
                 (item) => item.kycStatus === "Rejected"
             ).length,
             description: "Applications rejected",
-            icon: XCircle,
+            icon: Shield,
             color: "bg-red-100 text-red-600",
         },
         {
@@ -379,7 +381,7 @@ function Remitter({ onAddRemitter }: RemitterProps) {
     ];
 
     const selectClass =
-        "w-full rounded-lg border border-slate-300 bg-white px-3 py-3 text-sm text-slate-700 shadow-sm outline-none transition focus:border-violet-500 focus:ring-2 focus:ring-violet-200";
+        "w-full appearance-none rounded-lg border border-slate-300 bg-white px-3 py-3 pr-10 text-sm text-slate-700 shadow-sm outline-none transition focus:border-violet-500 focus:ring-2 focus:ring-violet-200";
 
     const filtersList = [
         {
@@ -537,19 +539,6 @@ function Remitter({ onAddRemitter }: RemitterProps) {
                         Search
                     </button>
                 </form>
-                <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-                    <h3 className="text-base font-semibold text-slate-800">
-                        Filters
-                    </h3>
-
-                    <button
-                        type="button"
-                        onClick={resetFilters}
-                        className="text-sm font-medium text-violet-600 hover:text-violet-800"
-                    >
-                        Clear All
-                    </button>
-                </div>
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                     {filtersList.map((filter) => (
                         <div key={filter.name}>
@@ -599,7 +588,15 @@ function Remitter({ onAddRemitter }: RemitterProps) {
                         </div>
                     ))}
                 </div>
-                <div className="mt-6 flex justify-end border-t border-slate-100 pt-5">
+                <div className="mt-6 flex flex-wrap justify-end gap-3 border-t border-slate-100 pt-5">
+                    <button
+                        type="button"
+                        onClick={resetFilters}
+                        className="inline-flex w-full items-center justify-center gap-1.5 rounded-lg border border-slate-300 bg-white px-6 py-3 text-sm font-medium text-slate-700 transition hover:bg-slate-50 sm:w-auto"
+                    >
+                        <RotateCcw size={15} aria-hidden="true" />
+                        Clear All
+                    </button>
                     <button
                         type="button"
                         onClick={handleSearch}
@@ -620,16 +617,21 @@ function Remitter({ onAddRemitter }: RemitterProps) {
                 </div>
 
                 <div className="overflow-x-auto">
-                    <table className="w-full min-w-[900px] text-left text-sm">
+                    <table className="w-full min-w-[900px] table-fixed text-left text-sm">
+                        <colgroup>
+                            {Array.from({ length: 7 }, (_, index) => (
+                                <col key={index} style={{ width: `${100 / 7}%` }} />
+                            ))}
+                        </colgroup>
                         <thead className="bg-slate-50 text-slate-500">
                             <tr>
-                                <th className="px-5 py-3 font-medium text-lg">Remitter ID</th>
-                                <th className="px-5 py-3 font-medium text-lg">Name</th>
-                                <th className="px-5 py-3 font-medium text-lg">Type</th>
-                                <th className="px-5 py-3 font-medium text-lg">Agent</th>
-                                <th className="px-5 py-3 font-medium text-lg">Affiliate</th>
-                                <th className="px-5 py-3 font-medium text-lg">Contact</th>
-                                <th className="px-5 py-3 font-medium text-lg">KYC Status</th>
+                                <th className="px-5 py-5 font-medium text-lg">Remitter ID</th>
+                                <th className="px-5 py-5 font-medium text-lg">Name</th>
+                                <th className="px-5 py-5 font-medium text-lg" >Type</th>
+                                <th className="px-5 py-5 font-medium text-lg">Agent</th>
+                                <th className="px-5 py-5 font-medium text-lg">Affiliate</th>
+                                <th className="px-5 py-5 font-medium text-lg">Contact</th>
+                                <th className="px-5 py-5 font-medium text-lg">KYC Status</th>
                             </tr>
                         </thead>
 

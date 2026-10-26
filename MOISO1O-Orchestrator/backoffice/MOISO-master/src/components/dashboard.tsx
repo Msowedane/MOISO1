@@ -348,7 +348,7 @@ function Dashboard() {
               <hr className="my-4 border-slate-200" />
               <div className="space-y-2 text-xs">
                 <p className="flex justify-between">
-                  Direct USI: <span>0</span>
+                  Direct: <span>0</span>
                 </p>
                 <p className="flex justify-between">
                   White Label: <span>0</span>
@@ -372,7 +372,7 @@ function Dashboard() {
               <hr className="my-4 border-slate-200" />
               <div className="space-y-2 text-xs">
                 <p className="flex justify-between">
-                  Direct USI: <span>£0.00</span>
+                  Direct: <span>£0.00</span>
                 </p>
                 <p className="flex justify-between">
                   White Label: <span>£0.00</span>
@@ -549,12 +549,11 @@ function Dashboard() {
 
             <div>
               <div
-                className={`flex overflow-hidden rounded-lg transition-colors duration-200 ${
-                  currentPage === "Remitter" ||
+                className={`flex overflow-hidden rounded-lg transition-colors duration-200 ${currentPage === "Remitter" ||
                   currentPage === "Remitter Transactions"
-                    ? "bg-[#b589d6] text-white"
-                    : "bg-transparent text-slate-900 hover:bg-violet-200"
-                }`}
+                  ? "bg-[#b589d6] text-white"
+                  : "bg-transparent text-slate-900 hover:bg-violet-200"
+                  }`}
               >
                 <button
                   type="button"
@@ -584,9 +583,8 @@ function Dashboard() {
                 >
                   <ChevronDown
                     size={16}
-                    className={`transition-transform duration-200 ${
-                      openMenu === "remitter" ? "rotate-180" : ""
-                    }`}
+                    className={`transition-transform duration-200 ${openMenu === "remitter" ? "rotate-180" : ""
+                      }`}
                   />
                 </button>
               </div>

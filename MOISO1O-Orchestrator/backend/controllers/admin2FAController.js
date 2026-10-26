@@ -58,8 +58,9 @@ const setup2FA = async (req, res) => {
             });
         }
         const secret = speakeasy.generateSecret({
-            name: `USI Remittance Admin (${admin.email})`,
-            issuer: 'USI Remittance Admin',
+            name: `MOISO` Remittance Admin(${ admin.email
+        })`,
+            issuer: 'MOISO Remittance Admin',
             length: 20
         });
         const qrCodeUrl = await QRCode.toDataURL(secret.otpauth_url);
@@ -68,13 +69,13 @@ const setup2FA = async (req, res) => {
         admin.twoFactorEnabled = false;
 
         await admin.save();
-        console.log(`Admin 2FA setup initiated for: ${admin.email}`)
+        console.log(`Admin 2FA setup initiated for: ${ admin.email } `)
         if (process.env.NODE_ENV === 'development') {
             console.log('\n╔════════════════════════════════════════════════════════════════╗');
             console.log('║       DEVELOPMENT MODE - ADMIN 2FA SETUP DETAILS               ║');
             console.log('╠════════════════════════════════════════════════════════════════╣');
-            console.log(`║  Email: ${admin.email.padEnd(55)}║`);
-            console.log(`║  Secret: ${secret.base32.padEnd(54)}║`);
+            console.log(`║  Email: ${ admin.email.padEnd(55) }║`);
+            console.log(`║  Secret: ${ secret.base32.padEnd(54) }║`);
             console.log('╚════════════════════════════════════════════════════════════════╝\n');
         }
         res.json({
@@ -131,7 +132,7 @@ const verify2FA = async (req, res) => {
         admin.twoFactorBackupCodes = backupCodes;
         await admin.save();
 
-        console.log(`✅ Admin 2FA enabled for: ${admin.email}`);
+        console.log(`✅ Admin 2FA enabled for: ${ admin.email } `);
         res.json({
             success: true,
             message: '2FA has been enabled successfully!',
@@ -200,7 +201,7 @@ const disabled2FA = async (req, res) => {
         admin.twoFactorBackupCodes = [];
         await admin.save();
 
-        console.log(`🔓 Admin 2FA disabled for: ${admin.email}`);
+        console.log(`🔓 Admin 2FA disabled for: ${ admin.email } `);
 
         res.json({
             success: true,
@@ -229,7 +230,7 @@ const verifyTOTPLogin = async (adminId, code) => {
             // Remove used backup code
             admin.twoFactorBackupCodes.splice(backupCodeIndex, 1);
             await admin.save();
-            console.log(`🔑 Admin backup code used for: ${admin.email}`);
+            console.log(`🔑 Admin backup code used for: ${ admin.email } `);
             return true;
         }
         const verified = speakeasy.totp.verify({

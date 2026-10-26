@@ -85,11 +85,11 @@ function TransactionSummary({
                 <section className="rounded-xl border border-slate-200 bg-white p-5 sm:p-6">
                     <h3 className="flex items-center gap-3 text-lg font-semibold text-slate-900">
                         <UserRound size={20} />
-                        Parties &amp; route
+                        Remitter &amp; Beneficiary
                     </h3>
                     <dl className="mt-3">
-                        <SummaryRow label="Remitter" value={remitter} />
-                        <SummaryRow label="Beneficiary" value={beneficiary} />
+                        <SummaryRow label="Sender" value={remitter} />
+                        <SummaryRow label="Recipient" value={beneficiary} />
                         <SummaryRow
                             label="Destination country"
                             value={destinationCountry}
@@ -160,7 +160,7 @@ function TransactionSummary({
                     }}
                     className="rounded-lg border border-slate-300 bg-white px-5 py-3 text-sm font-medium text-slate-800 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-40"
                 >
-                    Payment Declined
+                    Cancel  Payment
                 </button>
                 <button
                     type="button"
@@ -171,16 +171,20 @@ function TransactionSummary({
                     }}
                     className="rounded-lg border border-violet-200 bg-violet-200 px-5 py-3 text-sm font-medium text-slate-900 transition hover:bg-violet-400 disabled:cursor-not-allowed disabled:opacity-40"
                 >
-                    Payment Done
+                    Confirm   Payment
                 </button>
             </div>
 
-            {paymentResult && (
-                <p role="status" className="text-sm font-medium text-slate-700">
+            {/* {paymentResult && (
+                <p
+                    role="status"
+                    className={`text-sm font-medium ${paymentResult === "done" ? "text-green-600" : "text-red-600"
+                        }`}
+                >
                     Payment status:{" "}
                     {paymentResult === "done" ? "Done" : "Declined"}
                 </p>
-            )}
+            )} */}
 
             {paymentResult && resultModalOpen && (
                 <div
@@ -199,9 +203,14 @@ function TransactionSummary({
                         className="w-full max-w-md rounded-xl border border-slate-200 bg-white p-6 shadow-2xl"
                     >
                         <div className="flex items-start gap-4">
-                            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-slate-100 text-slate-800">
+                            <div
+                                className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full ${paymentResult === "done"
+                                    ? "bg-green-100 text-green-600"
+                                    : "bg-red-100 text-red-600"
+                                    }`}
+                            >
                                 {paymentResult === "done" ? (
-                                    <Check size={22} />
+                                    <Check size={22} strokeWidth={3} className="bg-green" />
                                 ) : (
                                     <X size={22} />
                                 )}
@@ -209,20 +218,23 @@ function TransactionSummary({
                             <div>
                                 <h2
                                     id="payment-result-title"
-                                    className="text-lg font-semibold text-slate-900"
+                                    className={`text-lg font-semibold ${paymentResult === "done"
+                                        ? "text-black-600"
+                                        : "text-black-600"
+                                        }`}
                                 >
                                     {paymentResult === "done"
-                                        ? "Payment is done"
-                                        : "Payment declined"}
+                                        ? "Payment Successful"
+                                        : "Cancel Payment"}
                                 </h2>
-                                <p className="mt-2 text-sm leading-6 text-slate-600">
+                                {/* <p className="mt-2 text-sm leading-6 text-slate-600">
                                     {paymentResult === "done"
                                         ? "The transaction has been marked as paid."
                                         : "The transaction has been marked as declined."}
-                                </p>
-                                <p className="mt-2 text-xs leading-5 text-slate-500">
+                                </p> */}
+                                {/* <p className="mt-2 text-xs leading-5 text-slate-500">
                                     This is a frontend status only. No payment provider was contacted.
-                                </p>
+                                </p> */}
                             </div>
                         </div>
                         <div className="mt-6 flex justify-end">
@@ -232,7 +244,7 @@ function TransactionSummary({
                                 onClick={() => setResultModalOpen(false)}
                                 className="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-800 transition hover:bg-slate-100"
                             >
-                                Cancel
+                                Close
                             </button>
                         </div>
                     </section>

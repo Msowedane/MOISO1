@@ -18,40 +18,52 @@ import {
     type FrontendBeneficiary,
     type FrontendRemitter,
 } from "../../lib/frontendStore";
-type DestinationCountry = string[];
+import "flag-icons/css/flag-icons.min.css";
 
-const destinationCountries: DestinationCountry = [
-    "🇮🇳 India",
-    "🇷🇺 Russia",
-    "🇺🇸 United States",
-    "🇬🇧 United Kingdom",
-    "🇦🇪 United Arab Emirates",
-    "🇸🇦 Saudi Arabia",
-    "🇴🇲 Oman",
-    "🇧🇩 Bangladesh",
-    "🇵🇰 Pakistan",
-    "🇱🇰 Sri Lanka",
-    "🇳🇵 Nepal",
-    "🇨🇳 China",
-    "🇯🇵 Japan",
-    "🇸🇬 Singapore",
-    "🇲🇾 Malaysia",
-    "🇹🇭 Thailand",
-    "🇵🇭 Philippines",
-    "🇮🇩 Indonesia",
-    "🇶🇦 Qatar",
-    "🇰🇼 Kuwait",
-    "🇧🇭 Bahrain",
-    "🇺🇸 United States",
-    "🇨🇦 Canada",
-    "🇦🇺 Australia",
-    "🇳🇿 New Zealand",
-    "🇩🇪 Germany",
-    "🇫🇷 France",
-    "🇮🇹 Italy",
-    "🇪🇸 Spain",
-    "🇿🇦 South Africa",
-];
+type DestinationCountry = {
+    code: string;
+    name: string;
+};
+
+const destinationCountryCodes = `
+    AD AE AF AG AI AL AM AO AQ AR AS AT AU AW AX AZ BA BB BD BE BF BG BH BI BJ BL BM BN BO BQ BR BS BT BV BW BY BZ
+    CA CC CD CF CG CH CI CK CL CM CN CO CR CU CV CW CX CY CZ
+    DE DJ DK DM DO DZ
+    EC EE EG EH ER ES ET
+    FI FJ FK FM FO FR
+    GA GB GD GE GF GG GH GI GL GM GN GP GQ GR GS GT GU GW GY
+    HK HM HN HR HT HU
+    ID IE IL IM IN IO IQ IR IS IT JE JM JO JP
+    KE KG KH KI KM KN KP KR KW KY KZ
+    LA LB LC LI LK LR LS LT LU LV LY
+    MA MC MD ME MF MG MH MK ML MM MN MO MP MQ MR MS MT MU MV MW MX MY MZ
+    NA NC NE NF NG NI NL NO NP NR NU NZ
+    OM
+    PA PE PF PG PH PK PL PM PN PR PS PT PW PY
+    QA
+    RE RO RS RU RW
+    SA SB SC SD SE SG SH SI SJ SK SL SM SN SO SR SS ST SV SX SY SZ
+    TC TD TF TG TH TJ TK TL TM TN TO TR TT TV TW TZ
+    UA UG UM US UY UZ
+    VA VC VE VG VI VN VU
+    WF WS
+    YE YT
+    ZA ZM ZW
+`.trim().split(/\s+/);
+
+const countryNames = new Intl.DisplayNames(["en"], { type: "region" });
+
+const destinationCountries: DestinationCountry[] = destinationCountryCodes
+    .map((code) => {
+        const name = countryNames.of(code);
+
+        if (!name) {
+            throw new Error(`Missing display name for country code: ${code}`);
+        }
+
+        return { code, name };
+    })
+    .sort((first, second) => first.name.localeCompare(second.name));
 
 const currencyByCountry: Record<string, string> = {
     India: "INR",
@@ -90,10 +102,11 @@ function CreateTransactions() {
     const [showBeneficiaryModal, setShowBeneficiaryModal] = useState(false);
     const [showRemitterModal, setShowRemitterModal] = useState(false);
     const [selectedCountry, setSelectedCountry] = useState("");
+    const [countryDropdownOpen, setCountryDropdownOpen] = useState(false);
+    const [countrySearch, setCountrySearch] = useState("");
     const [selectedPayoutMethod, setSelectedPayoutMethod] = useState<
         "Account Transfer" | "Cash Pickup"
     >("Account Transfer");
-    const [selectedCurrency, setSelectedCurrency] = useState("");
     const [sourceCountry, setSourceCountry] = useState("United Kingdom");
     const [sourceCurrency, setSourceCurrency] = useState("GBP");
     const [sendAmount, setSendAmount] = useState("");
@@ -155,14 +168,16 @@ function CreateTransactions() {
             .includes(beneficiarySearch.trim().toLowerCase())
     );
 
-    const destinationCountryName = selectedCountry
-        .split(" ")
-        .slice(1)
-        .join(" ");
+    const [selectedCountryCode = "", ...selectedCountryNameParts] =
+        selectedCountry.split(" ");
+    const destinationCountryName = selectedCountryNameParts.join(" ");
     const destinationCurrency =
         currencyByCountry[destinationCountryName] ?? "USD";
-    const destinationCurrencies = Array.from(
-        new Set([destinationCurrency, "USD"])
+    const matchingDestinationCountries = destinationCountries.filter(
+        ({ name, code }) =>
+            `${name} ${code}`
+                .toLowerCase()
+                .includes(countrySearch.trim().toLowerCase())
     );
 
     const handleNextPage = () => {
@@ -258,25 +273,95 @@ function CreateTransactions() {
                                 >
                                     Destination Country *
                                 </label>
-                                <select
-                                    id="destinationCountry"
-                                    required
-                                    value={selectedCountry}
-                                    onChange={(event) => {
-                                        setSelectedCountry(event.target.value);
-                                        setSelectedCurrency("");
-                                    }}
-                                    className="h-12 w-full max-w-md rounded-lg border border-slate-300 bg-white px-4 text-slate-700 outline-none transition focus:border-slate-500 focus:ring-2 focus:ring-slate-200"
-                                >
-                                    <option value="" disabled>
-                                        -- Select a country --
-                                    </option>
-                                    {destinationCountries.map((item, index) => (
-                                        <option key={`${item}-${index}`} value={item}>
-                                            {item}
-                                        </option>
-                                    ))}
-                                </select>
+                                <div className="relative w-full max-w-md">
+                                    <button
+                                        id="destinationCountry"
+                                        type="button"
+                                        aria-haspopup="listbox"
+                                        aria-expanded={countryDropdownOpen}
+                                        onClick={() =>
+                                            setCountryDropdownOpen(!countryDropdownOpen)
+                                        }
+                                        className="flex h-12 w-full items-center gap-3 rounded-lg border border-slate-300 bg-white px-4 text-left text-slate-700 outline-none transition focus:border-slate-500 focus:ring-2 focus:ring-slate-200"
+                                    >
+                                        {selectedCountryCode ? (
+                                            <span
+                                                aria-hidden="true"
+                                                className={`fi fi-${selectedCountryCode.toLowerCase()}`}
+                                            />
+                                        ) : null}
+                                        <span className="flex-1">
+                                            {destinationCountryName ||
+                                                "-- Select a country --"}
+                                        </span>
+                                        <span aria-hidden="true" className="text-slate-500">
+                                            ▾
+                                        </span>
+                                    </button>
+                                    {countryDropdownOpen && (
+                                        <div className="absolute z-30 mt-1 w-full overflow-hidden rounded-lg border border-slate-300 bg-white shadow-lg">
+                                            <input
+                                                type="search"
+                                                autoFocus
+                                                aria-label="Search destination countries"
+                                                value={countrySearch}
+                                                onChange={(event) =>
+                                                    setCountrySearch(event.target.value)
+                                                }
+                                                onKeyDown={(event) => {
+                                                    if (event.key === "Escape") {
+                                                        setCountryDropdownOpen(false);
+                                                    }
+                                                }}
+                                                placeholder="Search countries..."
+                                                className="h-11 w-full border-b border-slate-200 px-4 text-slate-700 outline-none focus:ring-2 focus:ring-inset focus:ring-slate-200"
+                                            />
+                                            <ul
+                                                role="listbox"
+                                                aria-labelledby="destinationCountry"
+                                                className="max-h-64 overflow-y-auto p-1"
+                                            >
+                                                {matchingDestinationCountries.length ? (
+                                                    matchingDestinationCountries.map(
+                                                        ({ code, name }) => (
+                                                            <li
+                                                                key={code}
+                                                                role="option"
+                                                                aria-selected={
+                                                                    selectedCountryCode === code
+                                                                }
+                                                            >
+                                                                <button
+                                                                    type="button"
+                                                                    onClick={() => {
+                                                                        setSelectedCountry(
+                                                                            `${code} ${name}`
+                                                                        );
+                                                                        setCountryDropdownOpen(
+                                                                            false
+                                                                        );
+                                                                        setCountrySearch("");
+                                                                    }}
+                                                                    className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-left text-slate-700 hover:bg-slate-100"
+                                                                >
+                                                                    <span
+                                                                        aria-hidden="true"
+                                                                        className={`fi fi-${code.toLowerCase()}`}
+                                                                    />
+                                                                    <span>{name}</span>
+                                                                </button>
+                                                            </li>
+                                                        )
+                                                    )
+                                                ) : (
+                                                    <li className="px-3 py-2 text-sm text-slate-500">
+                                                        No countries found.
+                                                    </li>
+                                                )}
+                                            </ul>
+                                        </div>
+                                    )}
+                                </div>
                                 {selectedCountry && (
                                     <p className="text-sm text-slate-500">
                                         Pays out in {destinationCurrency}
@@ -312,11 +397,10 @@ function CreateTransactions() {
                                                     aria-pressed={
                                                         selectedPayoutMethod === label
                                                     }
-                                                    className={`flex min-h-14 items-center justify-center gap-3 rounded-xl border px-4 py-3 text-base font-medium transition ${
-                                                        selectedPayoutMethod === label
-                                                            ? "border-slate-500 bg-slate-100 text-slate-900"
-                                                            : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
-                                                    }`}
+                                                    className={`flex min-h-14 items-center justify-center gap-3 rounded-xl border px-4 py-3 text-base font-medium transition ${selectedPayoutMethod === label
+                                                        ? "border-slate-500 bg-slate-100 text-slate-900"
+                                                        : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
+                                                        }`}
                                                 >
                                                     <Icon size={20} />
                                                     {label}
@@ -328,42 +412,6 @@ function CreateTransactions() {
                                         </p>
                                     </div>
 
-                                    <div className="space-y-3">
-                                        <h3 className="text-base font-medium text-slate-800">
-                                            Destination Currency *
-                                        </h3>
-                                        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                                            {destinationCurrencies.map((currency) => (
-                                                <button
-                                                    key={currency}
-                                                    type="button"
-                                                    onClick={() =>
-                                                        setSelectedCurrency(currency)
-                                                    }
-                                                    aria-pressed={
-                                                        (selectedCurrency || destinationCurrency) ===
-                                                        currency
-                                                    }
-                                                    className={`rounded-xl border-2 p-4 text-left transition ${
-                                                        (selectedCurrency || destinationCurrency) ===
-                                                        currency
-                                                            ? "border-slate-500 bg-slate-100"
-                                                            : "border-slate-200 bg-white hover:border-slate-400"
-                                                    }`}
-                                                >
-                                                    <span className="block font-semibold text-slate-900">
-                                                        {currency}
-                                                    </span>
-                                                    <span className="mt-1 block text-sm text-slate-500">
-                                                        Rate unavailable
-                                                    </span>
-                                                </button>
-                                            ))}
-                                        </div>
-                                        <p className="text-sm text-slate-500">
-                                            Indicative rates — the exact rate is confirmed once you enter an amount.
-                                        </p>
-                                    </div>
                                 </>
                             )}
                         </div>
@@ -555,7 +603,7 @@ function CreateTransactions() {
                                             getFrontendRemitters();
                                         const createdRemitter =
                                             savedRemitters[
-                                                savedRemitters.length - 1
+                                            savedRemitters.length - 1
                                             ];
                                         if (createdRemitter) {
                                             setRemitterSearch(
@@ -614,7 +662,7 @@ function CreateTransactions() {
                                             className="h-12 w-full rounded-lg border border-slate-300 bg-white px-4 text-slate-900 outline-none focus:border-slate-500 focus:ring-2 focus:ring-slate-200"
                                         >
                                             <option value="United Kingdom">
-                                                United Kingdom (GBR) — default
+                                                United Kingdom
                                             </option>
                                         </select>
                                     </div>
@@ -633,7 +681,7 @@ function CreateTransactions() {
                                             }
                                             className="h-12 w-full rounded-lg border border-slate-300 bg-white px-4 text-slate-900 outline-none focus:border-slate-500 focus:ring-2 focus:ring-slate-200"
                                         >
-                                            <option value="GBP">GBP — default</option>
+                                            <option value="GBP">GBP</option>
                                         </select>
                                     </div>
                                 </div>
@@ -668,7 +716,7 @@ function CreateTransactions() {
                                         htmlFor="transaction-recipient-amount"
                                         className="block font-medium text-slate-900"
                                     >
-                                        Recipient Gets ({selectedCurrency || destinationCurrency})
+                                        Recipient Gets ({destinationCurrency})
                                     </label>
                                     <input
                                         id="transaction-recipient-amount"
@@ -732,7 +780,7 @@ function CreateTransactions() {
                                     <option value="">Select payment method...</option>
                                     <option>Bank Transfer</option>
                                     <option>Debit Card</option>
-                                    <option>Cash</option>
+                                    <option></option>
                                 </select>
                             </div>
                             <div className="space-y-2">
@@ -807,9 +855,7 @@ function CreateTransactions() {
                         payoutMethod={selectedPayoutMethod}
                         sourceCountry={sourceCountry}
                         sourceCurrency={sourceCurrency}
-                        destinationCurrency={
-                            selectedCurrency || destinationCurrency
-                        }
+                        destinationCurrency={destinationCurrency}
                         sendAmount={sendAmount}
                         recipientAmount={recipientAmount}
                         sourceOfIncome={sourceOfIncome}
