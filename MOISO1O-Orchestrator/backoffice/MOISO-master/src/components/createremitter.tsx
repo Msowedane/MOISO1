@@ -1,9 +1,11 @@
 import { useState, type FormEvent } from "react";
 import { ArrowLeft } from "lucide-react";
 import { toast } from "react-toastify";
+import { createFrontendId, saveFrontendRemitter } from "../lib/frontendStore";
 type CreateRemitterProps = {
     onClose: () => void;
     onCreated: () => void;
+    embedded?: boolean;
 };
 
 type RemitterFormData = {
@@ -87,7 +89,11 @@ const inputClass =
     "w-full rounded-lg border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700 outline-none transition focus:border-violet-500 focus:ring-2 focus:ring-violet-100";
 
 
-function CreateRemitter({ onClose, onCreated }: CreateRemitterProps) {
+function CreateRemitter({
+    onClose,
+    onCreated,
+    embedded = false,
+}: CreateRemitterProps) {
     const [formData, setFormData] = useState<RemitterFormData>({
         accountType: "Consumer",
         accountCountry: "United Kingdom",
@@ -144,6 +150,27 @@ function CreateRemitter({ onClose, onCreated }: CreateRemitterProps) {
 
     const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+        try {
+            saveFrontendRemitter({
+                id: createFrontendId("REM"),
+                customerId: createFrontendId("CUS"),
+                firstName: formData.firstName.trim(),
+                lastName: formData.lastName.trim(),
+                email: formData.email.trim(),
+                mobileNumber: `${formData.phoneCountryCode}${formData.phone}`.trim(),
+                country: formData.accountCountry,
+                remitterType: formData.accountType,
+                status: "ACTIVE",
+            });
+        } catch (saveError) {
+            toast.error(
+                saveError instanceof Error
+                    ? saveError.message
+                    : "Unable to save the remitter in this browser."
+            );
+            return;
+        }
+
         onCreated();
         toast.success("Remitter Added Successfully", {
             position: "bottom-right",
@@ -191,7 +218,13 @@ function CreateRemitter({ onClose, onCreated }: CreateRemitterProps) {
     };
 
     return (
-        <div className="fixed inset-0 z-[9999] h-screen w-screen overflow-y-auto bg-slate-50">
+        <div
+            className={
+                embedded
+                    ? "w-full overflow-y-auto bg-white"
+                    : "fixed inset-0 z-[9999] h-screen w-screen overflow-y-auto bg-slate-50"
+            }
+        >
             <header className="sticky top-0 z-10 flex items-center gap-4 border-b border-slate-200 bg-white px-5 py-4 sm:px-8">
                 <button
                     type="button"

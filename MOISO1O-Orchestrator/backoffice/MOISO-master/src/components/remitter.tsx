@@ -1,4 +1,5 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { getFrontendRemitters } from "../lib/frontendStore";
 import {
     Users,
     UserCheck,
@@ -151,12 +152,10 @@ type RemitterRecord = {
     activity: Activity;
     pep: PEP;
     vulnerability: Vulnerability;
-    country: Country;
+    country: string;
     remitterType: Exclude<RemitterType, "All Types">;
     agentType: Exclude<AgentType, "All Remitters" | "All Agent Remitters">;
 };
-
-const remitters: RemitterRecord[] = [];
 
 type Filters = {
     accountStatus: string;
@@ -181,11 +180,44 @@ const initialFilters: Filters = {
 };
 
 function Remitter({ onAddRemitter }: RemitterProps) {
+    const [remitters, setRemitters] = useState<RemitterRecord[]>([]);
+    const [storageError, setStorageError] = useState("");
     const [searchTerm, setSearchTerm] = useState("");
     const [appliedSearch, setAppliedSearch] = useState("");
     const [filters, setFilters] = useState<Filters>(initialFilters);
     const [appliedFilters, setAppliedFilters] =
         useState<Filters>(initialFilters);
+
+    useEffect(() => {
+        try {
+            setRemitters(
+                getFrontendRemitters().map((remitter) => ({
+                    id: remitter.id,
+                    name: `${remitter.firstName} ${remitter.lastName}`.trim(),
+                    email: remitter.email,
+                    phone: remitter.mobileNumber,
+                    accountStatus:
+                        remitter.status === "ACTIVE" ? "Active" : "Suspended",
+                    kycStatus: "KYC Pending",
+                    activity: "Non Active (no use in 3 months)",
+                    pep: "Not a PEP",
+                    vulnerability: "Not Currently Flagged",
+                    country: remitter.country,
+                    remitterType:
+                        remitter.remitterType === "Business"
+                            ? "Business"
+                            : "Consumer",
+                    agentType: "Direct Remitter",
+                }))
+            );
+        } catch (error) {
+            setStorageError(
+                error instanceof Error
+                    ? error.message
+                    : "Unable to load saved remitters."
+            );
+        }
+    }, []);
 
     const updateFilter = (name: keyof Filters, value: string) => {
         setFilters((previous) => ({
@@ -406,7 +438,7 @@ function Remitter({ onAddRemitter }: RemitterProps) {
             <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
                 <div>
                     <h1 className="text-2xl font-bold text-slate-900">
-                        Remitter Management
+                        Remitter
                     </h1>
                     <p className="mt-1 text-sm text-slate-500">
                         Manage and monitor all registered remitters.
@@ -421,6 +453,15 @@ function Remitter({ onAddRemitter }: RemitterProps) {
                     + Add Remitter
                 </button>
             </div>
+
+            {storageError && (
+                <p
+                    role="alert"
+                    className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+                >
+                    {storageError}
+                </p>
+            )}
 
             {/* Summary Cards */}
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 xl:grid-cols-3">
@@ -443,9 +484,9 @@ function Remitter({ onAddRemitter }: RemitterProps) {
                                 </div>
 
                                 <div
-                                    className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl ${card.color}`}
+                                    className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${card.color}`}
                                 >
-                                    <Icon size={23} />
+                                    <Icon size={18} />
                                 </div>
                             </div>
 

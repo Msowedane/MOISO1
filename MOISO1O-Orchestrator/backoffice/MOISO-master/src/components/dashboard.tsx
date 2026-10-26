@@ -15,17 +15,22 @@ import { XELiveRatesWidget } from "./liverates";
 import QuickRate from "./quickRate";
 import Transactions from "./transactions/transactions";
 import CreateTransactions from "./transactions/createTransactions";
+import CreateBeneficiary from "./createBeneficiary";
 import CreateRemitter from "./createremitter";
 import Remitter from "./remitter";
+import Beneficiary from "./beneficiary";
+import BeneficiaryScreening from "./beneficiaryScreening";
 
 type DashboardPage =
   | "Dashboard"
   | "Transactions"
   | "Create Transaction"
+  | "Create Beneficiary"
   | "Create Remitter"
   | "Remitter"
   | "Remitter Transactions"
   | "Beneficiary"
+  | "Beneficiary Screening"
   | "Direct Transfers and Fees"
   | "Overview"
   | "System Rates"
@@ -40,10 +45,12 @@ const dashboardPageTabs: Record<DashboardPage, string> = {
   Dashboard: "dashboard",
   Transactions: "transactions",
   "Create Transaction": "create-transaction",
+  "Create Beneficiary": "create-beneficiary",
   "Create Remitter": "create-remitter",
   Remitter: "remitters",
   "Remitter Transactions": "remitter-transactions",
   Beneficiary: "beneficiary",
+  "Beneficiary Screening": "beneficiary-screening",
   "Direct Transfers and Fees": "direct-transfers-and-fees",
   Overview: "overview",
   "System Rates": "system-rates",
@@ -57,6 +64,7 @@ const dashboardPageTabs: Record<DashboardPage, string> = {
 
 function getDashboardPage(pathname: string, search: string): DashboardPage {
   if (pathname === "/createremitter") return "Create Remitter";
+  if (pathname === "/create-beneficiary") return "Create Beneficiary";
   if (pathname === "/create-transaction" || pathname === "/createtransactions") {
     return "Create Transaction";
   }
@@ -75,7 +83,7 @@ function Dashboard() {
   const currentPage = getDashboardPage(location.pathname, location.search);
 
   const [openMenu, setOpenMenu] = useState<
-    "rates" | "compliance" | null
+    "remitter" | "rates" | "compliance" | null
   >(null);
 
   const [quickActionsOpen, setQuickActionsOpen] = useState(false);
@@ -102,9 +110,6 @@ function Dashboard() {
     location.state,
     navigate,
   ]);
-
-  // The URL is the source of truth, so direct links, refresh, and browser
-  // back/forward all display the same selected page.
   const handleToggle = (page: DashboardPage) => {
     if (page === "Create Remitter") {
       navigate("/createremitter");
@@ -113,6 +118,11 @@ function Dashboard() {
 
     if (page === "Create Transaction") {
       navigate("/create-transaction");
+      return;
+    }
+
+    if (page === "Create Beneficiary") {
+      navigate("/create-beneficiary");
       return;
     }
 
@@ -183,12 +193,29 @@ function Dashboard() {
       <Remitter onAddRemitter={() => handleToggle("Create Remitter")} />
     ),
     "Create Transaction": <CreateTransactions />,
+    "Create Beneficiary": <CreateBeneficiary />,
     "Create Remitter": (
       <CreateRemitter
         onClose={() => handleToggle("Remitter")}
         onCreated={() => handleToggle("Remitter")}
       />
     ),
+    Beneficiary: (
+      <Beneficiary
+        onAddBeneficiary={() => handleToggle("Create Beneficiary")}
+        onScreenBeneficiary={(beneficiaryId) =>
+          navigate(
+            `/dashboard?tab=beneficiary-screening&beneficiaryId=${encodeURIComponent(beneficiaryId)}`
+          )
+        }
+        onEditBeneficiary={(beneficiaryId) =>
+          navigate(
+            `/create-beneficiary?editBeneficiary=${encodeURIComponent(beneficiaryId)}`
+          )
+        }
+      />
+    ),
+    "Beneficiary Screening": <BeneficiaryScreening />,
   };
 
   // SHOW THE SELECTED PAGE ON THE RIGHT
@@ -234,6 +261,11 @@ function Dashboard() {
                             ) {
                               handleToggle("Remitter");
                             } else if (
+                              action === "Beneficiary" || action === "Beneficiary Trsancations"
+                            ) {
+                              handleToggle("Beneficiary")
+                            }
+                            else if (
                               action === "Pending Transactions" ||
                               action === "In Progress Transactions" ||
                               action === "Unassigned Transactions"
@@ -304,7 +336,6 @@ function Dashboard() {
             </div>
           </div>
 
-          {/* Summary Cards */}
           <section className="grid grid-cols-1 gap-4 py-1 sm:grid-cols-2 lg:grid-cols-4">
             <div className="rounded-lg border border-slate-200 bg-white p-4 text-sm text-slate-700 shadow-sm">
               <h2 className="pb-6 text-xl font-bold text-slate-800">
@@ -433,8 +464,8 @@ function Dashboard() {
                   onClick={() => setCurrentSlide(slide)}
                   aria-label={`Go to slide ${slide + 1}`}
                   className={`h-2.5 rounded-full transition-all duration-300 ${currentSlide === slide
-                      ? "w-6 bg-violet-600"
-                      : "w-2.5 bg-slate-300 hover:bg-slate-400"
+                    ? "w-6 bg-violet-600"
+                    : "w-2.5 bg-slate-300 hover:bg-slate-400"
                     }`}
                 />
               ))}
@@ -479,8 +510,8 @@ function Dashboard() {
 
       <main
         className={`mx-auto w-full ${currentPage === "Create Transaction"
-            ? "px-0 py-0"
-            : "px-5 py-4 sm:px-8"
+          ? "px-0 py-0"
+          : "px-5 py-4 sm:px-8"
           }`}
       >
         <div className="flex gap-4">
@@ -516,34 +547,72 @@ function Dashboard() {
               Transactions
             </button>
 
-            <button
-              type="button"
-              onClick={() => handleToggle("Remitter")}
-              aria-current={
-                currentPage === "Remitter" ? "page" : undefined
-              }
-              className={sidebarButtonClass(
-                currentPage === "Remitter"
-              )}
-            >
-              Remitter
-            </button>
+            <div>
+              <div
+                className={`flex overflow-hidden rounded-lg transition-colors duration-200 ${
+                  currentPage === "Remitter" ||
+                  currentPage === "Remitter Transactions"
+                    ? "bg-[#b589d6] text-white"
+                    : "bg-transparent text-slate-900 hover:bg-violet-200"
+                }`}
+              >
+                <button
+                  type="button"
+                  onClick={() => handleToggle("Remitter")}
+                  aria-current={
+                    currentPage === "Remitter" ? "page" : undefined
+                  }
+                  className="flex-1 px-4 py-3 text-left font-medium focus-visible:outline focus-visible:outline-2 focus-visible:outline-violet-600"
+                >
+                  Remitter
+                </button>
+                <button
+                  type="button"
+                  onClick={() =>
+                    setOpenMenu((current) =>
+                      current === "remitter" ? null : "remitter"
+                    )
+                  }
+                  aria-label={
+                    openMenu === "remitter"
+                      ? "Hide Remitter submenu"
+                      : "Show Remitter submenu"
+                  }
+                  aria-expanded={openMenu === "remitter"}
+                  aria-controls="remitter-submenu"
+                  className="px-4 py-3 transition-colors hover:bg-violet-400/30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-violet-600"
+                >
+                  <ChevronDown
+                    size={16}
+                    className={`transition-transform duration-200 ${
+                      openMenu === "remitter" ? "rotate-180" : ""
+                    }`}
+                  />
+                </button>
+              </div>
 
-            <button
-              type="button"
-              onClick={() => handleToggle("Remitter Transactions")}
-              aria-current={
-                currentPage === "Remitter Transactions"
-                  ? "page"
-                  : undefined
-              }
-              className={sidebarButtonClass(
-                currentPage === "Remitter Transactions"
+              {openMenu === "remitter" && (
+                <nav
+                  id="remitter-submenu"
+                  className="mt-1 space-y-1 border-l border-violet-300 pl-3"
+                >
+                  <button
+                    type="button"
+                    onClick={() => handleToggle("Remitter Transactions")}
+                    aria-current={
+                      currentPage === "Remitter Transactions"
+                        ? "page"
+                        : undefined
+                    }
+                    className={submenuButtonClass(
+                      currentPage === "Remitter Transactions"
+                    )}
+                  >
+                    Remitter Transactions
+                  </button>
+                </nav>
               )}
-            >
-              Remitter Transactions
-            </button>
-
+            </div>
             <button
               type="button"
               onClick={() => handleToggle("Beneficiary")}
@@ -572,6 +641,7 @@ function Dashboard() {
                   [
                     "Direct Transfers and Fees",
                     "Overview",
+                    "Beneficiary Screening",
                     "System Rates",
                     "Approval Queue",
                   ].includes(currentPage)

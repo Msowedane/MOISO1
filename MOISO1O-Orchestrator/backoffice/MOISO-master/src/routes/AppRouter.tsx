@@ -17,6 +17,7 @@ export default function AppRouter() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/create-transaction" element={<Dashboard />} />
+        <Route path="/create-beneficiary" element={<Dashboard />} />
         <Route path="/createtransactions" element={<Dashboard />} />
         <Route path="/createremitter" element={<Dashboard />} />
         <Route path="*" element={<Navigate to="/login" replace />} />
