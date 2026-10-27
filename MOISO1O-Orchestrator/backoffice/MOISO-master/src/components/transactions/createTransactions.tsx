@@ -18,7 +18,6 @@ import {
     type FrontendBeneficiary,
     type FrontendRemitter,
 } from "../../lib/frontendStore";
-// @ts-expect-error CSS side-effect imports are handled by the bundler.
 import "flag-icons/css/flag-icons.min.css";
 
 type DestinationCountry = {

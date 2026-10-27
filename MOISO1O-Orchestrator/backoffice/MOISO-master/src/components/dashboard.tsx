@@ -21,6 +21,7 @@ import Remitter from "./remitter";
 import Beneficiary from "./beneficiary";
 import BeneficiaryScreening from "./beneficiaryScreening";
 import RemitterTransactions from "./remitterTransactions";
+import DirectRatesOverview from "./DirectRatesFees/overview";
 
 type DashboardPage =
   | "Dashboard"
@@ -33,7 +34,7 @@ type DashboardPage =
   | "Remitter Transactions"
   | "Beneficiary"
   | "Beneficiary Screening"
-  | "Direct Transfers and Fees"
+  | "Direct Rates & Fees"
   | "Reports"
   | "Overview"
   | "System Rates"
@@ -55,7 +56,7 @@ const dashboardPageTabs: Record<DashboardPage, string> = {
   "Remitter Transactions": "remitter-transactions",
   Beneficiary: "beneficiary",
   "Beneficiary Screening": "beneficiary-screening",
-  "Direct Transfers and Fees": "direct-transfers-and-fees",
+  "Direct Rates & Fees": "direct-rates-&-fees",
   Reports: "reports",
   Overview: "overview",
   "System Rates": "system-rates",
@@ -221,6 +222,8 @@ function Dashboard() {
       />
     ),
     "Beneficiary Screening": <BeneficiaryScreening />,
+    Overview: <DirectRatesOverview />,
+    "Direct Rates & Fees": <DirectRatesOverview />,
   };
 
   // SHOW THE SELECTED PAGE ON THE RIGHT
@@ -582,37 +585,59 @@ function Dashboard() {
 
             {/* Direct Transfers and Fees */}
             <div>
-              <button
-                type="button"
-                aria-expanded={openMenu === "rates"}
-                onClick={() => {
-                  setOpenMenu((current) =>
-                    current === "rates" ? null : "rates"
-                  );
-                  handleToggle("Direct Transfers and Fees");
-                }}
-                className={sidebarButtonClass(
-                  [
-                    "Direct Transfers and Fees",
-                    "Overview",
-                    "Beneficiary Screening",
-                    "System Rates",
-                    "Approval Queue",
-                  ].includes(currentPage)
-                )}
+              <div
+                className={`flex overflow-hidden rounded-lg transition-colors duration-200 ${[
+                  "Direct Rates & Fees",
+                  "Overview",
+                  "Beneficiary Screening",
+                  "System Rates",
+                  "Approval Queue",
+                ].includes(currentPage)
+                  ? "bg-[#b589d6] text-white"
+                  : "bg-transparent text-slate-900 hover:bg-violet-200"
+                  }`}
               >
-                <span className="flex items-center justify-between">
-                  Direct Transfers and Fees
+                <button
+                  type="button"
+                  onClick={() => handleToggle("Direct Rates & Fees")}
+                  aria-current={
+                    currentPage === "Direct Rates & Fees"
+                      ? "page"
+                      : undefined
+                  }
+                  className="flex-1 px-4 py-3 text-left font-medium focus-visible:outline focus-visible:outline-2 focus-visible:outline-violet-600"
+                >
+                  Direct Rates & Fees
+                </button>
+                <button
+                  type="button"
+                  aria-expanded={openMenu === "rates"}
+                  aria-label={
+                    openMenu === "rates"
+                      ? "Hide Direct Transfers and Fees submenu"
+                      : "Show Direct Transfers and Fees submenu"
+                  }
+                  aria-controls="direct-rates-submenu"
+                  onClick={() =>
+                    setOpenMenu((current) =>
+                      current === "rates" ? null : "rates"
+                    )
+                  }
+                  className="px-4 transition-colors hover:bg-violet-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-violet-400"
+                >
                   <ChevronDown
                     size={16}
                     className={`shrink-0 transition-transform ${openMenu === "rates" ? "rotate-180" : ""
                       }`}
                   />
-                </span>
-              </button>
+                </button>
+              </div>
 
               {openMenu === "rates" && (
-                <nav className="mt-1 space-y-1 border-l border-violet-200 pl-3">
+                <nav
+                  id="direct-rates-submenu"
+                  className="mt-1 space-y-1 border-l border-violet-200 pl-3"
+                >
                   {(
                     [
                       "Overview",
