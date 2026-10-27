@@ -112,9 +112,6 @@ function OverView() {
         <div className="space-y-6 pb-8">
             <header className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
                 <div>
-                    <p className="mb-2 text-sm font-semibold uppercase tracking-[0.16em] text-violet-700">
-                        Pricing management
-                    </p>
                     <h1 className="text-3xl font-bold tracking-tight text-slate-900">
                         Direct Rates & Fees
                     </h1>
@@ -122,45 +119,41 @@ function OverView() {
                         Manage exchange rates, fee structures, and corridor charges in one place.
                     </p>
                 </div>
-                <div className="rounded-xl border border-violet-100 bg-violet-50 px-4 py-3 text-sm text-violet-800">
-                    <span className="font-semibold">Pricing overview</span>
-                    <span className="ml-2 text-violet-600">Rates and fees at a glance</span>
-                </div>
             </header>
 
-            <div className="grid gap-4 sm:grid-cols-2">
-                <section className="overflow-hidden rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+            <div className="grid gap-2 sm:grid-cols-2">
+                <section className="rounded-xl border border-slate-200 bg-white p-5">
                     <div className="flex items-start justify-between">
                         <div>
                             <p className="text-sm font-medium text-slate-500">Active Rates</p>
-                            <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-900">
+                            <h2 className="mt-3 text-2xl font-bold tracking-tight text-slate-900">
                                 {exchangeRates.length}
                             </h2>
                             <p className="mt-1 text-xs text-slate-500">Configured exchange rates</p>
                         </div>
                         <div className="rounded-xl bg-blue-50 p-3">
-                            <TrendingUp size={22} className="text-blue-600" />
+                            <TrendingUp size={15} className="text-blue-600" />
                         </div>
                     </div>
-                    <div className="mt-5 h-1 rounded-full bg-blue-100">
-                        <div className="h-1 w-1/3 rounded-full bg-blue-500" />
+                    <div className="mt-5 h-1 rounded bg-blue-100">
+                        <div className="h-1 w-1 rounded-full bg-blue-500" />
                     </div>
                 </section>
                 <section className="overflow-hidden rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
                     <div className="flex items-start justify-between">
                         <div>
                             <p className="text-sm font-medium text-slate-500">Fee Structures</p>
-                            <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-900">
+                            <h2 className="mt-3 text-2xl font-bold text-slate-900">
                                 {feeStructures.length}
                             </h2>
                             <p className="mt-1 text-xs text-slate-500">Configured remitter fees</p>
                         </div>
-                        <div className="rounded-xl bg-emerald-50 p-3">
-                            <ReceiptText size={22} className="text-emerald-600" />
+                        <div className="rounded-xl p-3">
+                            <ReceiptText size={20} className="text-emerald-600" />
                         </div>
                     </div>
-                    <div className="mt-5 h-1 rounded-full bg-emerald-100">
-                        <div className="h-1 w-1/3 rounded-full bg-emerald-500" />
+                    <div className="mt-5 h-1 rounded bg-emerald-100">
+                        <div className="h-1 w-1 rounded-full bg-emerald-500" />
                     </div>
                 </section>
             </div>
@@ -172,11 +165,10 @@ function OverView() {
                             key={tab}
                             type="button"
                             onClick={() => setActiveTab(tab)}
-                            className={`border-b-2 px-4 py-4 text-sm font-semibold transition-colors ${
-                                activeTab === tab
-                                    ? "border-violet-600 text-violet-700"
-                                    : "border-transparent text-slate-500 hover:text-slate-900"
-                            }`}
+                            className={`border-b-2 px-4 py-4 text-sm font-semibold transition-colors ${activeTab === tab
+                                ? "border-violet-600 text-violet-700"
+                                : "border-transparent text-slate-500 hover:text-slate-900"
+                                }`}
                         >
                             {tab === "exchangeRate" ? "Exchange Rate" : "Fees"}
                         </button>
@@ -350,11 +342,10 @@ function OverView() {
                                         type="button"
                                         onClick={() => setActiveFee(fee)}
                                         aria-pressed={activeFee === fee}
-                                        className={`rounded-lg px-4 py-2 text-sm font-medium transition ${
-                                            activeFee === fee
-                                                ? "bg-violet-100 text-violet-800 ring-1 ring-inset ring-violet-200 hover:bg-violet-400"
-                                                : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-                                        }`}
+                                        className={`rounded-lg px-4 py-2 text-sm font-medium transition ${activeFee === fee
+                                            ? "bg-violet-100 text-violet-800 ring-1 ring-inset ring-violet-200 hover:bg-violet-400"
+                                            : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                                            }`}
                                     >
                                         {fee}
                                     </button>
