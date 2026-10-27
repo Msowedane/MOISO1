@@ -41,8 +41,8 @@ function BeneficiaryScreening() {
     const primaryPayout = beneficiary?.payoutMethods[0];
 
     return (
-        <main className="min-h-screen bg-slate-50 p-4 sm:p-6">
-            <div className="mx-auto max-w-6xl space-y-6">
+        <main className="w-full">
+            <div className="space-y-6">
                 <header className="flex flex-wrap items-center gap-3">
                     <button
                         type="button"

@@ -18,6 +18,7 @@ import {
     type FrontendBeneficiary,
     type FrontendRemitter,
 } from "../../lib/frontendStore";
+// @ts-expect-error CSS side-effect imports are handled by the bundler.
 import "flag-icons/css/flag-icons.min.css";
 
 type DestinationCountry = {
@@ -97,7 +98,7 @@ const currencyByCountry: Record<string, string> = {
     "South Africa": "ZAR",
 };
 
-function CreateTransactions() {
+function CreateTransactions({ embedded = false }: { embedded?: boolean }) {
     const [currentStep, setCurrentStep] = useState(0);
     const [showBeneficiaryModal, setShowBeneficiaryModal] = useState(false);
     const [showRemitterModal, setShowRemitterModal] = useState(false);
@@ -193,7 +194,10 @@ function CreateTransactions() {
         }
     }
     return (
-        <main className="w-full min-w-0 overflow-x-hidden bg-slate-50 px-2 py-2 sm:px-4">
+        <main
+            className={`w-full min-w-0 overflow-x-hidden bg-slate-50 ${embedded ? "" : "px-2 py-2 sm:px-4"
+                }`}
+        >
             <section className="flex w-full min-w-0 flex-col gap-8 rounded-xl border border-slate-200 bg-white p-5 shadow-sm sm:p-8 lg:p-10">
                 <header className="flex flex-col gap-4 border-b border-slate-200 pb-6 sm:flex-row sm:items-center sm:justify-between">
                     <div className="space-y-1 flex gap-2 ">

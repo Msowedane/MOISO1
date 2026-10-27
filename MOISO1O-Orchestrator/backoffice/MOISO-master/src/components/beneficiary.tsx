@@ -293,8 +293,8 @@ function Beneficiary({
         "w-full rounded-lg border border-slate-300 bg-white px-3 py-3 text-sm text-slate-700 shadow-sm outline-none transition focus:border-violet-500 focus:ring-2 focus:ring-violet-200";
 
     return (
-        <div className="min-h-screen bg-slate-50 p-4 sm:p-6">
-            <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
+        <div className="space-y-6">
+            <div className="flex flex-wrap items-center justify-between gap-4">
                 <div>
                     <h1 className="text-2xl font-bold text-slate-900">
                         Beneficiary
@@ -316,7 +316,7 @@ function Beneficiary({
             {storageError && (
                 <p
                     role="alert"
-                    className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+                    className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
                 >
                     {storageError}
                 </p>
@@ -354,7 +354,7 @@ function Beneficiary({
                 })}
             </div>
 
-            <section className="mt-6 rounded-xl border border-slate-200 bg-white p-4 shadow-sm sm:p-6">
+            <section className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm sm:p-6">
                 <div className="mb-5">
                     <h2 className="text-lg font-semibold text-slate-900">
                         Search &amp; Filter Beneficiaries
@@ -444,7 +444,7 @@ function Beneficiary({
                 </div>
             </section>
 
-            <section className="mt-6 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+            <section className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
                 <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 p-4 sm:p-5">
                     <h2 className="text-lg font-semibold text-slate-900">
                         Beneficiary List

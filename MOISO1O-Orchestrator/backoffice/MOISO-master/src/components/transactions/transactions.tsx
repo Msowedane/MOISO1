@@ -173,6 +173,7 @@ function Transactions() {
             console.log("Selected file:", file.name);
             // filelogic here.
         }
+
     };
 
     const handleImport = () => {
@@ -192,7 +193,7 @@ function Transactions() {
         <section className="space-y-6">
             <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                    <h1 className="text-4xl font-bold text-slate-900">
+                    <h1 className="text-2xl font-bold text-slate-900">
                         Transactions
                     </h1>
                     <p className="mt-1 text-lg text-slate-500">
@@ -202,7 +203,7 @@ function Transactions() {
                 <div className="flex flex-wrap items-center gap-3">
                     <button
                         type="button"
-                        onClick={() => navigate("/refunds")}
+                        onClick={() => navigate("/dashboard?tab=refunds")}
                         className="rounded-lg border border-slate-300 px-4 py-2.5 text-sm font-medium text-slate-700 transition-colors hover:bg-violet-100 hover:text-violet-700"
                     >
                         Refunds
@@ -247,7 +248,7 @@ function Transactions() {
             </header>
             <section className="grid grid-cols-5 gap-3">
                 <div className="h-[140px] min-w-0 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-                    <div className="flex items-center justify-between gap-3 pb-19">
+                    <div className="flex items-center justify-between gap-3 pb-18">
                         <h2 className="min-w-0 text-base font-semibold leading-6 text-slate-900">Total Transactions</h2>
                         <Activity aria-hidden="true" className="h-5 w-5 shrink-0 text-slate-500" />
                     </div>
@@ -257,7 +258,7 @@ function Transactions() {
 
                 <div className="h-[140px] min-w-0 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
                     <div className="flex items-center justify-between gap-3">
-                        <h2 className="min-w-0 text-base font-semibold leading-6 text-slate-900">Active Transactions</h2>
+                        <h2 className="min-w-0 text-base font-semibold leading-6 text-slate-900 ">Active Transactions</h2>
                         <LoaderCircle aria-hidden="true" className="h-5 w-5 shrink-0 text-blue-500" />
                     </div>
                     <p className="text-3xl font-bold text-slate-950 pt-12">0</p>
@@ -265,7 +266,7 @@ function Transactions() {
                 </div>
 
                 <div className="h-[140px] min-w-0 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-                    <div className="flex items-center justify-between gap-3 pb-16">
+                    <div className="flex items-center justify-between gap-3 pb-18">
                         <h2 className="min-w-0 text-base font-semibold leading-6 text-slate-900">Delivered</h2>
                         <Archive aria-hidden="true" className="h-5 w-5 shrink-0 text-green-500" />
                     </div>
@@ -274,7 +275,7 @@ function Transactions() {
                 </div>
 
                 <div className="h-[140px] min-w-0 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-                    <div className="flex items-center justify-between gap-3 pb-16">
+                    <div className="flex items-center justify-between gap-3 pb-18">
                         <h2 className="min-w-0 text-base font-semibold leading-6 text-slate-900">Issues</h2>
                         <CircleAlert aria-hidden="true" className="h-5 w-5 shrink-0 text-red-500" />
                     </div>
@@ -283,7 +284,7 @@ function Transactions() {
                 </div>
 
                 <div className="h-[140px] min-w-0 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-                    <div className="flex items-center justify-between gap-3 pb-16">
+                    <div className="flex items-center justify-between gap-3 pb-18">
                         <h2 className="min-w-0 text-base font-semibold leading-6 text-slate-900">Cancelled</h2>
                         <CircleX aria-hidden="true" className="h-5 w-5 shrink-0 text-orange-500" />
                     </div>

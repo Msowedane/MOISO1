@@ -221,11 +221,11 @@ function CreateRemitter({
         <div
             className={
                 embedded
-                    ? "w-full overflow-y-auto bg-white"
+                    ? "w-full space-y-6 overflow-y-auto bg-white"
                     : "fixed inset-0 z-[9999] h-screen w-screen overflow-y-auto bg-slate-50"
             }
         >
-            <header className="sticky top-0 z-10 flex items-center gap-4 border-b border-slate-200 bg-white px-5 py-4 sm:px-8">
+            <header className={`sticky top-0 z-10 flex items-center gap-4 bg-white ${embedded ? "" : "border-b border-slate-200 px-5 py-4 sm:px-8"}`}>
                 <button
                     type="button"
                     onClick={onClose}
@@ -244,7 +244,7 @@ function CreateRemitter({
                 </div>
             </header>
 
-            <main className="w-full px-4 py-6 sm:px-8 sm:py-8 lg:px-12">
+            <main className={`w-full ${embedded ? "" : "px-4 py-6 sm:px-8 sm:py-8 lg:px-12"}`}>
                 <form
                     onSubmit={handleSubmit}
                     className="space-y-8 rounded-xl border border-slate-200 bg-white p-5 shadow-sm sm:p-8"

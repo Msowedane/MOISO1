@@ -20,10 +20,12 @@ import CreateRemitter from "./createremitter";
 import Remitter from "./remitter";
 import Beneficiary from "./beneficiary";
 import BeneficiaryScreening from "./beneficiaryScreening";
+import RemitterTransactions from "./remitterTransactions";
 
 type DashboardPage =
   | "Dashboard"
   | "Transactions"
+  | "Refunds"
   | "Create Transaction"
   | "Create Beneficiary"
   | "Create Remitter"
@@ -32,6 +34,7 @@ type DashboardPage =
   | "Beneficiary"
   | "Beneficiary Screening"
   | "Direct Transfers and Fees"
+  | "Reports"
   | "Overview"
   | "System Rates"
   | "Approval Queue"
@@ -44,6 +47,7 @@ type DashboardPage =
 const dashboardPageTabs: Record<DashboardPage, string> = {
   Dashboard: "dashboard",
   Transactions: "transactions",
+  Refunds: "refunds",
   "Create Transaction": "create-transaction",
   "Create Beneficiary": "create-beneficiary",
   "Create Remitter": "create-remitter",
@@ -52,6 +56,7 @@ const dashboardPageTabs: Record<DashboardPage, string> = {
   Beneficiary: "beneficiary",
   "Beneficiary Screening": "beneficiary-screening",
   "Direct Transfers and Fees": "direct-transfers-and-fees",
+  Reports: "reports",
   Overview: "overview",
   "System Rates": "system-rates",
   "Approval Queue": "approval-queue",
@@ -82,9 +87,7 @@ function Dashboard() {
   const navigate = useNavigate();
   const currentPage = getDashboardPage(location.pathname, location.search);
 
-  const [openMenu, setOpenMenu] = useState<
-    "remitter" | "rates" | "compliance" | null
-  >(null);
+  const [openMenu, setOpenMenu] = useState<"rates" | "compliance" | null>(null);
 
   const [quickActionsOpen, setQuickActionsOpen] = useState(false);
   const [daysOpen, setDaysOpen] = useState(false);
@@ -189,13 +192,15 @@ function Dashboard() {
   // MAP PAGE NAMES TO THEIR COMPONENTS
   const pageComponents: Partial<Record<DashboardPage, ReactNode>> = {
     Transactions: <Transactions />,
+    "Remitter Transactions": <RemitterTransactions />,
     Remitter: (
       <Remitter onAddRemitter={() => handleToggle("Create Remitter")} />
     ),
-    "Create Transaction": <CreateTransactions />,
-    "Create Beneficiary": <CreateBeneficiary />,
+    "Create Transaction": <CreateTransactions embedded />,
+    "Create Beneficiary": <CreateBeneficiary embedded />,
     "Create Remitter": (
       <CreateRemitter
+        embedded
         onClose={() => handleToggle("Remitter")}
         onCreated={() => handleToggle("Remitter")}
       />
@@ -222,14 +227,14 @@ function Dashboard() {
   const renderPage = () => {
     if (currentPage === "Dashboard") {
       return (
-        <>
+        <div className="space-y-6">
           {/* Welcome and Actions */}
           <div className="flex flex-wrap items-center justify-between gap-4">
-            <h1 className="text-3xl font-semibold tracking-tight text-slate-900">
+            <h1 className="text-2xl font-bold tracking-tight text-slate-900">
               Welcome to the Dashboard
             </h1>
 
-            <div className="py-4">
+            <div>
               <div className="flex flex-wrap items-center gap-2">
                 {/* Quick Actions */}
                 <div className="relative">
@@ -272,7 +277,7 @@ function Dashboard() {
                             ) {
                               handleToggle("Transactions");
                             } else if (action === "View Reports") {
-                              handleToggle("Overview");
+                              handleToggle("Reports");
                             }
                           }}
                           className="shrink-0 rounded-lg border border-slate-200 px-4 py-3 text-sm text-slate-700 hover:bg-violet-50"
@@ -327,7 +332,7 @@ function Dashboard() {
 
                 <button
                   type="button"
-                  onClick={() => handleToggle("Overview")}
+                  onClick={() => handleToggle("Reports")}
                   className="rounded-lg border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700"
                 >
                   View Reports
@@ -336,7 +341,7 @@ function Dashboard() {
             </div>
           </div>
 
-          <section className="grid grid-cols-1 gap-4 py-1 sm:grid-cols-2 lg:grid-cols-4">
+          <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <div className="rounded-lg border border-slate-200 bg-white p-4 text-sm text-slate-700 shadow-sm">
               <h2 className="pb-6 text-xl font-bold text-slate-800">
                 Total Transactions
@@ -405,7 +410,7 @@ function Dashboard() {
           </section>
 
           {/* Charts */}
-          <section className="grid grid-cols-1 items-stretch gap-4 py-4 lg:grid-cols-2">
+          <section className="grid grid-cols-1 items-stretch gap-4 lg:grid-cols-2">
             <div className="min-w-0 rounded-xl border border-slate-200 bg-white p-5">
               <TransactionChart />
             </div>
@@ -416,7 +421,7 @@ function Dashboard() {
           </section>
 
           {/* Currency Exchange */}
-          <section className="py-4">
+          <section>
             <h2 className="mb-4 text-lg font-semibold text-slate-800">
               Currency Exchange
             </h2>
@@ -473,15 +478,15 @@ function Dashboard() {
           </section>
 
           {/* Live Exchange Rates */}
-          <section className="mt-6">
+          <section>
             <XELiveRatesWidget />
           </section>
 
           {/* Quick Rate */}
-          <section className="mt-6">
+          <section>
             <QuickRate />
           </section>
-        </>
+        </div>
       );
     }
 
@@ -509,14 +514,11 @@ function Dashboard() {
       <HeaderPage />
 
       <main
-        className={`mx-auto w-full ${currentPage === "Create Transaction"
-          ? "px-0 py-0"
-          : "px-5 py-4 sm:px-8"
-          }`}
+        className="mx-auto w-full px-5 py-5 sm:px-8"
       >
-        <div className="flex gap-4">
+        <div className="flex items-start gap-6">
           {/* LEFT SIDEBAR */}
-          <aside className="flex w-64 shrink-0 flex-col gap-2 self-stretch border-r border-slate-200 p-2">
+          <aside className="flex w-64 shrink-0 flex-col gap-2 self-start border-r border-slate-200 p-2">
             <button
               type="button"
               onClick={() => handleToggle("Dashboard")}
@@ -547,79 +549,33 @@ function Dashboard() {
               Transactions
             </button>
 
-            <div>
-              <div
-                className={`flex overflow-hidden rounded-lg transition-colors duration-200 ${currentPage === "Remitter" ||
-                  currentPage === "Remitter Transactions"
-                  ? "bg-[#b589d6] text-white"
-                  : "bg-transparent text-slate-900 hover:bg-violet-200"
-                  }`}
-              >
-                <button
-                  type="button"
-                  onClick={() => handleToggle("Remitter")}
-                  aria-current={
-                    currentPage === "Remitter" ? "page" : undefined
-                  }
-                  className="flex-1 px-4 py-3 text-left font-medium focus-visible:outline focus-visible:outline-2 focus-visible:outline-violet-600"
-                >
-                  Remitter
-                </button>
-                <button
-                  type="button"
-                  onClick={() =>
-                    setOpenMenu((current) =>
-                      current === "remitter" ? null : "remitter"
-                    )
-                  }
-                  aria-label={
-                    openMenu === "remitter"
-                      ? "Hide Remitter submenu"
-                      : "Show Remitter submenu"
-                  }
-                  aria-expanded={openMenu === "remitter"}
-                  aria-controls="remitter-submenu"
-                  className="px-4 py-3 transition-colors hover:bg-violet-400/30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-violet-600"
-                >
-                  <ChevronDown
-                    size={16}
-                    className={`transition-transform duration-200 ${openMenu === "remitter" ? "rotate-180" : ""
-                      }`}
-                  />
-                </button>
-              </div>
+            <button
+              type="button"
+              onClick={() => handleToggle("Remitter")}
+              aria-current={currentPage === "Remitter" ? "page" : undefined}
+              className={sidebarButtonClass(currentPage === "Remitter")}
+            >
+              Remitter
+            </button>
 
-              {openMenu === "remitter" && (
-                <nav
-                  id="remitter-submenu"
-                  className="mt-1 space-y-1 border-l border-violet-300 pl-3"
-                >
-                  <button
-                    type="button"
-                    onClick={() => handleToggle("Remitter Transactions")}
-                    aria-current={
-                      currentPage === "Remitter Transactions"
-                        ? "page"
-                        : undefined
-                    }
-                    className={submenuButtonClass(
-                      currentPage === "Remitter Transactions"
-                    )}
-                  >
-                    Remitter Transactions
-                  </button>
-                </nav>
+            <button
+              type="button"
+              onClick={() => handleToggle("Remitter Transactions")}
+              aria-current={
+                currentPage === "Remitter Transactions" ? "page" : undefined
+              }
+              className={sidebarButtonClass(
+                currentPage === "Remitter Transactions"
               )}
-            </div>
+            >
+              Remitter Transactions
+            </button>
+
             <button
               type="button"
               onClick={() => handleToggle("Beneficiary")}
-              aria-current={
-                currentPage === "Beneficiary" ? "page" : undefined
-              }
-              className={sidebarButtonClass(
-                currentPage === "Beneficiary"
-              )}
+              aria-current={currentPage === "Beneficiary" ? "page" : undefined}
+              className={sidebarButtonClass(currentPage === "Beneficiary")}
             >
               Beneficiary
             </button>

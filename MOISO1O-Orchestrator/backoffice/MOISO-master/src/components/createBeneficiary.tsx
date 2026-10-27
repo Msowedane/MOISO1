@@ -348,8 +348,20 @@ function CreateBeneficiary({
     const labelClass = "mb-2 block text-sm font-medium text-slate-700";
 
     return (
-        <main className={`${embedded ? "min-h-0" : "min-h-screen"} bg-slate-50 p-4 sm:p-6`}>
-            <div className="mx-auto max-w-5xl space-y-6">
+        <main
+            className={
+                embedded
+                    ? "w-full"
+                    : "min-h-screen bg-slate-50 p-4 sm:p-6"
+            }
+        >
+            <div
+                className={
+                    embedded
+                        ? "w-full space-y-6"
+                        : "mx-auto max-w-5xl space-y-6"
+                }
+            >
                 <header className="flex flex-wrap items-center gap-3">
                     <button
                         type="button"

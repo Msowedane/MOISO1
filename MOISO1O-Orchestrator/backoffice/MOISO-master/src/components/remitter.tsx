@@ -435,9 +435,9 @@ function Remitter({ onAddRemitter }: RemitterProps) {
     ] as const;
 
     return (
-        <div className="min-h-screen bg-slate-50 p-4 sm:p-6">
+        <div className="space-y-6">
             {/* Page Header */}
-            <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
+            <div className="flex flex-wrap items-center justify-between gap-4">
                 <div>
                     <h1 className="text-2xl font-bold text-slate-900">
                         Remitter
@@ -459,7 +459,7 @@ function Remitter({ onAddRemitter }: RemitterProps) {
             {storageError && (
                 <p
                     role="alert"
-                    className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+                    className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
                 >
                     {storageError}
                 </p>
@@ -499,7 +499,7 @@ function Remitter({ onAddRemitter }: RemitterProps) {
                     );
                 })}
             </div>
-            <section className="mt-6 rounded-xl border border-slate-200 bg-white p-4 shadow-sm sm:p-6">
+            <section className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm sm:p-6">
                 <div className="mb-5">
                     <h2 className="text-lg font-semibold text-slate-900">
                         Search & Filter Remitters
@@ -606,7 +606,7 @@ function Remitter({ onAddRemitter }: RemitterProps) {
                     </button>
                 </div>
             </section>
-            <section className="mt-6 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+            <section className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
                 <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 p-4 sm:p-5">
                     <h2 className="text-lg font-semibold text-slate-900">
                         Remitter List
@@ -617,61 +617,85 @@ function Remitter({ onAddRemitter }: RemitterProps) {
                 </div>
 
                 <div className="overflow-x-auto">
-                    <table className="w-full min-w-[900px] table-fixed text-left text-sm">
+                    <table className="w-full table-fixed border-separate border-spacing-0 text-left text-sm">
                         <colgroup>
-                            {Array.from({ length: 7 }, (_, index) => (
-                                <col key={index} style={{ width: `${100 / 7}%` }} />
-                            ))}
+                            <col style={{ width: "15%" }} />
+                            <col style={{ width: "14.2857%" }} />
+                            <col style={{ width: "14.2857%" }} />
+                            <col style={{ width: "14.2857%" }} />
+                            <col style={{ width: "14.2857%" }} />
+                            <col style={{ width: "14.2857%" }} />
+                            <col style={{ width: "10%" }} />
                         </colgroup>
                         <thead className="bg-slate-50 text-slate-500">
                             <tr>
-                                <th className="px-5 py-5 font-medium text-lg">Remitter ID</th>
-                                <th className="px-5 py-5 font-medium text-lg">Name</th>
-                                <th className="px-5 py-5 font-medium text-lg" >Type</th>
-                                <th className="px-5 py-5 font-medium text-lg">Agent</th>
-                                <th className="px-5 py-5 font-medium text-lg">Affiliate</th>
-                                <th className="px-5 py-5 font-medium text-lg">Contact</th>
-                                <th className="px-5 py-5 font-medium text-lg">KYC Status</th>
+                                {[
+                                    "Remitter ID",
+                                    "Name",
+                                    "Type",
+                                    "Agent",
+                                    "Affiliate",
+                                    "Contact",
+                                    "KYC Status",
+                                ].map((header) => (
+                                    <th
+                                        key={header}
+                                        className="whitespace-nowrap px-3 py-3 text-left font-medium text-base first:pl-5 last:pr-5"
+                                    >
+                                        {header}
+                                    </th>
+                                ))}
                             </tr>
                         </thead>
-
-                        <tbody className="divide-y divide-slate-100">
-                            {filteredRemitters.map((remitter) => (
-                                <tr
-                                    key={remitter.id}
-                                    className="transition hover:bg-slate-50"
-                                >
-                                    <td className="whitespace-nowrap px-5 py-4 font-medium text-slate-800">
-                                        {remitter.id}
-                                    </td>
-                                    <td className="whitespace-nowrap px-5 py-4 text-slate-700">
-                                        {remitter.name}
-                                    </td>
-                                    <td className="whitespace-nowrap px-5 py-4 text-slate-600">
-                                        {remitter.remitterType}
-                                    </td>
-                                    <td className="whitespace-nowrap px-5 py-4 text-slate-600">
-                                        {remitter.agentType}
-                                    </td>
-                                    <td className="whitespace-nowrap px-5 py-4 text-slate-600">
-                                        —
-                                    </td>
-                                    <td className="whitespace-nowrap px-5 py-4 text-slate-600">
-                                        {remitter.email}
-                                    </td>
-                                    <td className="whitespace-nowrap px-5 py-4">
-                                        {remitter.kycStatus}
-                                    </td>
-                                </tr>
-                            ))}
-
-                            {filteredRemitters.length === 0 && (
+                        <tbody>
+                            {filteredRemitters.length > 0 ? (
+                                filteredRemitters.map((remitter) => (
+                                    <tr
+                                        key={remitter.id}
+                                        className="border-t border-slate-200 hover:bg-slate-50"
+                                    >
+                                        <td className="px-3 py-3 text-left text-slate-700 first:pl-5 last:pr-5">
+                                            <span className="block truncate" title={remitter.id}>
+                                                {remitter.id}
+                                            </span>
+                                        </td>
+                                        <td className="px-3 py-3 text-left first:pl-5 last:pr-5">
+                                            <div className="truncate font-medium text-slate-900" title={remitter.name}>
+                                                {remitter.name}
+                                            </div>
+                                            <div className="truncate text-xs text-slate-500" title={remitter.country}>
+                                                {remitter.country}
+                                            </div>
+                                        </td>
+                                        <td className="px-3 py-3 text-left text-slate-700 first:pl-5 last:pr-5">
+                                            {remitter.remitterType}
+                                        </td>
+                                        <td className="px-3 py-3 text-left text-slate-700 first:pl-5 last:pr-5">
+                                            {remitter.agentType}
+                                        </td>
+                                        <td className="px-3 py-3 text-left text-slate-700 first:pl-5 last:pr-5">
+                                            {remitter.accountStatus}
+                                        </td>
+                                        <td className="px-3 py-3 text-left text-slate-700 first:pl-5 last:pr-5">
+                                            <div className="truncate" title={remitter.email}>{remitter.email}</div>
+                                            <div className="truncate text-xs text-slate-500" title={remitter.phone}>
+                                                {remitter.phone}
+                                            </div>
+                                        </td>
+                                        <td className="px-3 py-3 text-left first:pl-5 last:pr-5">
+                                            <span className="inline-flex rounded-full bg-amber-100 px-2.5 py-1 text-xs font-medium text-amber-700">
+                                                {remitter.kycStatus}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : (
                                 <tr>
                                     <td
                                         colSpan={7}
-                                        className="px-5 py-10 text-center text-slate-500"
+                                        className="h-32 px-3 py-10 text-center text-sm text-slate-500"
                                     >
-                                        No remitters available.
+                                        {/* No remitters match the current search and filters. */}
                                     </td>
                                 </tr>
                             )}
