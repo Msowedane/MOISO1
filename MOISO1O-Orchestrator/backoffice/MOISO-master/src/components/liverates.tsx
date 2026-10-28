@@ -196,8 +196,8 @@ export function XELiveRatesWidget({
             </div>
 
             <div className="space-y-5">
-                <div className="grid grid-cols-1 items-center gap-6 sm:grid-cols-2 lg:grid-cols-[200px_200px_40px_200px_200px]">
-                    <div style={{ width: "215px" }}>
+                <div className="grid grid-cols-1 items-center gap-5 sm:grid-cols-2 lg:grid-cols-[200px_200px_40px_200px_200px]">
+                    <div style={{ width: "210px" }}>
                         {/* <label className="mb-2 block text-sm font-medium"> */}
                         {/* Amount */}
                         {/* </label> */}
@@ -211,7 +211,7 @@ export function XELiveRatesWidget({
                             placeholder="Enter amount"
                         />
                     </div>
-                    <div style={{ width: "215px" }}>
+                    <div style={{ width: "210px" }}>
                         {/* <label className="mb-2 block text-sm font-medium">From</label> */}
                         <CurrencyPicker value={from} onChange={setFrom} label="From" />
                     </div>
@@ -228,13 +228,13 @@ export function XELiveRatesWidget({
                         style={{ marginLeft: "10px" }}>
                         <ArrowLeftRight className="h-5 w-5" />
                     </button>
-                    <div style={{ width: "215px" }}>
+                    <div style={{ width: "210px" }}>
                         {/* <label className="mb-2 block text-sm font-medium">To</label> */}
                         <CurrencyPicker value={to} onChange={setTo} label="To" />
                     </div>
                     <div className="min-w-0">
                         {/* <label className="mb-2 block text-sm font-medium">Converted amount</label> */}
-                        <div className="flex h-10 min-w-0 items-center rounded-md border bg-muted/30 px-3" style={{ width: "215px" }}>
+                        <div className="flex h-10 min-w-0 items-center rounded-md border bg-muted/30 px-2" style={{ width: "217px" }}>
                             {loading ? (
                                 <span className="flex items-center gap-2 text-sm text-muted-foreground">
                                     <Loader2 className="h-4 w-4 animate-spin" />

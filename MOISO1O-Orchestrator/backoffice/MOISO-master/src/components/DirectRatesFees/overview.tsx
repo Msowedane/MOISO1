@@ -7,7 +7,9 @@ import {
     Download,
     Upload,
     Pencil,
-    Plus
+    Plus,
+    ArrowLeft,
+    ArrowRight
 } from "lucide-react";
 type Fees =
     | 'Fees Structures'
@@ -35,6 +37,7 @@ function OverView() {
     const [activeTab, setActiveTab] = useState<"exchangeRate" | "fees">("exchangeRate");
     const [activeFee, setActiveFee] = useState<Fees>("Fees Structures");
     const [search, setSearch] = useState("");
+    const [currentPage, setCurrentPage] = useState(1)
     const fileInputRef = useRef<HTMLInputElement>(null);
     const exchangeRates: ExchangeRate[] = [];
     const feeStructures = [];
@@ -88,7 +91,12 @@ function OverView() {
         document.body.removeChild(link);
         URL.revokeObjectURL(url);
     };
-
+    const handleIncrementPage = () => {
+        setCurrentPage(prev => prev + 1)
+    }
+    const handleDecrementPage = () => {
+        setCurrentPage(prev => prev - 1)
+    }
     // Upload CSV
     const handleUploadCSV = (event: ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
@@ -260,7 +268,7 @@ function OverView() {
                                                 ].map((heading) => (
                                                     <th
                                                         key={heading}
-                                                        className="whitespace-nowrap border-b border-slate-200 px-4 py-3 text-xs font-semibold uppercase tracking-wide text-slate-500"
+                                                        className="whitespace-nowrap border-b border-slate-200 px-4 py-3 text-md font-bold uppercase tracking-wide text-slate-500"
                                                     >
                                                         {heading}
                                                     </th>
@@ -287,15 +295,15 @@ function OverView() {
                                                     <td colSpan={9} className="px-6 py-14 text-center">
                                                         <div className="mx-auto flex max-w-sm flex-col items-center">
                                                             <div className="mb-4 rounded-full bg-violet-50 p-3 text-violet-700">
-                                                                <TrendingUp size={22} />
+                                                                <TrendingUp size={15} className="text-blue-600" />
                                                             </div>
                                                             <p className="font-semibold text-slate-900">
-                                                                {search ? "No exchange rates found" : "No exchange rates yet"}
+                                                                {/* {search ? "No exchange rates found" : "No exchange rates yet"} */}
                                                             </p>
                                                             <p className="mt-1 text-sm text-slate-500">
-                                                                {search
+                                                                {/* {search
                                                                     ? "Try another search term or clear your search."
-                                                                    : "Create a sell rate or upload a CSV to get started."}
+                                                                    : "Create a sell rate or upload a CSV to get started."} */}
                                                             </p>
                                                         </div>
                                                     </td>
@@ -304,6 +312,14 @@ function OverView() {
                                         </tbody>
                                     </table>
                                 </div>
+                            </div>
+                            <div className="flex flex-wrap gap-225">
+                                <button className="flex flex-wrap" onClick={handleIncrementPage} disabled={currentPage === 0}>
+                                    <ArrowLeft size={16} />
+                                    Previous</button>
+                                <button className="flex flex-wrap" onClick={handleDecrementPage} disabled={currentPage === 1}>
+                                    <ArrowRight size={16} />
+                                    Next</button>
                             </div>
                         </div>
                     ) : (
@@ -372,10 +388,12 @@ function OverView() {
                                                             <div className="mb-4 rounded-full bg-emerald-50 p-3 text-emerald-700">
                                                                 <ReceiptText size={22} />
                                                             </div>
-                                                            <p className="font-semibold text-slate-900">No {activeFee.toLowerCase()} configured</p>
-                                                            <p className="mt-1 text-sm text-slate-500">
-                                                                Create a fee structure to see it listed here.
+                                                            <p className="font-semibold text-slate-900">
+                                                                {/* No {activeFee.toLowerCase()} configured */}
                                                             </p>
+                                                            {/* <p className="mt-1 text-sm text-slate-500">
+                                                                Create a fee structure to see it listed here.
+                                                            </p> */}
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -393,8 +411,8 @@ function OverView() {
                         </div>
                     )}
                 </div>
-            </section>
-        </div>
+            </section >
+        </div >
     );
 }
 
